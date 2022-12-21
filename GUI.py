@@ -21,4 +21,9 @@ def start(fileName):
         fileopen = open(fileName, 'r')
         for line in fileopen:
             fin.append(line)
+    for index, line  in enumerate(fin):
+        fin[index] = line.rstrip('\n')
     return fin
+
+def success():
+    g.msgbox("Операция завершена успешно!","Оповещение")
