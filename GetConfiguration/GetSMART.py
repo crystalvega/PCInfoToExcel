@@ -5,7 +5,7 @@ def gen(path, args, config):
     os.makedirs(resource_path('SMART') + "\\" + config[1], exist_ok=True)
     smartpath = resource_path('SMART') + "\\" + config[1] + "\\" + config[0] + ".txt"
     shutil.copyfile(args, smartpath)
-    return smartpath
+    return "SMART\\" + config[1] + "\\" + config[0] + ".txt"
    
 def status(path):
     statusret = []
@@ -26,8 +26,10 @@ def status(path):
             if line == "Description       : General Information":
                 i = False
             if i == True:
-                if line.startswith("Status") and line != "Status            : Ok" and line != 'Status            : ':
+                if line.startswith("Status") and line != "Status            : Ok" and line != 'Status            : ' and line != "Status            : Unknown":
                     statusret[y][1] = line.replace("Status            : ", "")
+    if len(statusret) == 0:
+        statusret.append(["0","Not Found"])
     return statusret
 
 def smart(path, searchwords, modelsize):
@@ -43,7 +45,7 @@ def smart(path, searchwords, modelsize):
                     i = 0
                     while i < len(modelsize):
                         if line.replace("Raw Value         : ", "") == modelsize[i][0]:
-                            smartret.append((disknumb, "Size", str(int(modelsize[i][1])/1000211184) + " ГБ"))
+                            smartret.append((disknumb, "Size", str(round(int(modelsize[i][1])/1000211184)) + " ГБ"))
                         i += 1
                 smartret.append([disknumb,pastline.replace('Description       : ', ''),line.replace("Raw Value         : ", "")])
                 y = not y
@@ -51,5 +53,9 @@ def smart(path, searchwords, modelsize):
             if set(searchwords) & set(line.split(': ')) or line == 'Description       : Model':
                 y = not y
                 pastline = line
-    return smartret
-    
+            
+    if len(smartret) < 4:
+        smartret2 = [[0,"Size","Not Found"],[0,"Model","Not Found"],[0,"Firmware Revision","Not Found"],[0,"Power-On Hours (POH)","Not Found"],[0,"Power Cycle Count","Not Found"]]
+        return smartret2
+    else:
+        return smartret

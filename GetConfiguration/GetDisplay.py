@@ -1,6 +1,6 @@
 from winreg import *
 import pyedid
-from numpy import hypot
+from math import hypot
 
 registry = ConnectRegistry(None, HKEY_LOCAL_MACHINE)
 def openRegistryA(dir):

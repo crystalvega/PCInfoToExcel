@@ -49,7 +49,7 @@ def create_hyperlink(rowin, rowend):
             break
         hyperlinkfrom.append(i)
     for i in range(rowin, rowend+1):
-        hyperlinkto.append(rowin)
+        hyperlinkto.append(i)
     for index, hl in enumerate(hyperlinkfrom):
         sheet1.cell(row = rowinputall, column = hl+1).hyperlink = fileName +"#'" + name_sheet2 + "'!E" + str(hyperlinkto[index]) + ':L' + str(hyperlinkto[index])
         
@@ -82,16 +82,19 @@ def configurationdisk():
         for inputinfo in diskconfiguration[i]:
             columninput += 1
             sheet2.cell(row = rowin, column =columninput).value = inputinfo[1]
+        sheet2.cell(row = rowin, column =1).value = "V"
         sheet2.cell(row=rowin, column=columninput).border = Border(right=Side(border_style="medium", color="000000"))
-        
+        sheet2.cell(row = rowin, column =columninput+1).value = " "
+        columninput = 4
         rowin += 1
         i += 1
+        
     for i in range(1, 13):
         sheet2.cell(row=rowin-1, column=i).border = Border(bottom=Side(border_style="medium", color="000000"))
         if i == 12:
             sheet2.cell(row=rowin-1, column=i).border = Border(right=Side(border_style="medium", color="000000"), bottom=Side(border_style="medium", color="000000"))
     if rowinputdisk != rowin-1:
-        for i in range(1, 5):
+        for i in range(2, 5):
             sheet2.merge_cells(start_row=rowinputdisk, start_column=i, end_row=rowin-1, end_column=i)
             sheet2.cell(row=rowinputdisk, column = i).alignment = Alignment(horizontal="center", vertical="center")
     return rowinputdisk, rowin-1
@@ -102,6 +105,7 @@ def configuration():
     while columninput < len(allconfiguration):
         columninput += 1
         sheet1.cell(row = rowinputall, column =columninput).value = allconfiguration[columninput-1][1]
+    sheet1.cell(row = rowinputall, column =columninput+1).value = " "
         
 def close():
     wb.save(filename = 'tablica.xlsx')

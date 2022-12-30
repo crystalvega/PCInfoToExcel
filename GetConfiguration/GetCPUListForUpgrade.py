@@ -2,12 +2,16 @@ from openpyxl import load_workbook
 
 def format_cpu(cpu):
     i = 0
-    wordsdelete = ['12th Gen Intel(R) Core(TM)', '11th Gen Intel(R) Core(TM)', '10th Gen Intel(R) Core(TM)']
-    for word in wordsdelete:
+    wordsdeleteintel = ['12th Gen ','11th Gen ','10th Gen ', '(R)', '(TM)']
+    wordsdeleteamd = [' with Radeon Vega Graphics', " Mobile", " Quad-Core Processor           "]
+    for word in wordsdeleteintel:
         if word in cpu:
-            cpu = cpu.replace(wordsdelete[i], "Intel Core")
-    if " Mobile" in cpu:
-        cpu = cpu.replace(" Mobile", "")
+            cpu = cpu.replace(word, "")
+            if " @" in cpu:
+                cpu = cpu.split(' @')[0]
+    for word in wordsdeleteamd:
+        if word in cpu:
+            cpu = cpu.replace(word, "")
     return cpu
 
 
@@ -19,7 +23,7 @@ def get_cpu_info(cpu):
     i = 1
     ipspec = 0
     while i < 3519:
-        if sheet.cell(row = i, column = 1).value == cpu:
+        if sheet.cell(row = i, column = 1).value in cpu:
             cpu_info[5] = i
             while ipspec < 5:
                 cpu_info[ipspec] = sheet.cell(row = i, column = ipspec+1).value
@@ -32,6 +36,7 @@ def get_cpu_upgrade(procinf):
     sheet = wb['CPU']
     i = 3519
     allcpus = 0
+    lastcpu = ""
     cpusret = []
     while i != 1:
         if sheet.cell(row = i, column = 4).value == procinf[3] and sheet.cell(row = i, column = 2).value > procinf[1]:

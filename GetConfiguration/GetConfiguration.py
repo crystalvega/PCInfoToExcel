@@ -1,5 +1,5 @@
 import wmi, win32print
-from GetConfiguration import GetDisplay, GetSMART, GetCPUListForUpgrade, GetAntivirus
+from GetConfiguration import GetDisplay, GetSMART, GetCPUListForUpgrade, GetAntivirus, GetDDR
 from GetConfiguration.GetIP import get_ip
 
 def get_char(config):
@@ -16,8 +16,9 @@ def get_char(config):
     status = GetSMART.status('C:\\Windows\\Temp\\dataofpack1\\tools\\smart.txt')
     smart = GetSMART.smart('C:\\Windows\\Temp\\dataofpack1\\tools\\smart.txt', smartwords, modelsize)
     display = GetDisplay.get(c.Win32_DesktopMonitor()[0].pnpdeviceid)
-    cpufromdb = GetCPUListForUpgrade.get_cpu_info(c.Win32_Processor()[0].Name)
+    cpufromdb =  GetCPUListForUpgrade.get_cpu_info(c.Win32_Processor()[0].Name)
     cpusupgrade = GetCPUListForUpgrade.get_cpu_upgrade(cpufromdb)
+    physicalmemory = c.Win32_PhysicalMemory()
     ip = get_ip()
 
     allconf.append(("Автозаполнение", "V"))
@@ -34,9 +35,9 @@ def get_char(config):
     allconf.append(("Частота процессора",str(c.Win32_Processor()[0].MaxClockSpeed) + " МГц"))
     allconf.append(("Баллы Passmark", cpufromdb[1]))
     allconf.append(("Дата выпуска", cpufromdb[2]))
-    allconf.append(("Тип ОЗУ", cpufromdb[4]))
-    for list in c.Win32_PhysicalMemory():
-        allconf.append(("ОЗУ, " + str(i) + " Планка", str(int(list.capacity)/1073741824) + " ГБ"))
+    allconf.append(("Тип ОЗУ", GetDDR.get(cpufromdb[4], physicalmemory)))
+    for list in physicalmemory:
+        allconf.append(("ОЗУ, " + str(i) + " Планка", str(round(int(list.capacity)/1073741824)) + " ГБ"))
         i += 1
     while i < 5:
         allconf.append(("ОЗУ, " + str(i) + " Планка", ""))
