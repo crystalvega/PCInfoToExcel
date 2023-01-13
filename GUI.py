@@ -1,6 +1,8 @@
 import os
 from pathlib import Path
 import easygui as g
+import tkinter as tk
+import tkinter.ttk as ttk
 
 def start(fileName):
     checking = False
@@ -30,3 +32,13 @@ def success():
     
 def Error():
     g.msgbox("Операция не может быть совершена из-за открытого Excel документа!","Оповещение")
+class progress_bar:
+    master = tk.Tk()
+    progress_bar = ttk.Progressbar(master, orient="horizontal",mode="determinate", maximum=100, value=0)
+    label_1 = tk.Label(master, text="Шкала выполнения программы")
+    label_1.grid(row=0, column=0)
+    progress_bar.grid(row=0, column=1)
+    master.update()
+    def Value(value, self):
+        self.progress_bar['value'] = value
+        self.master.update()

@@ -1,8 +1,7 @@
 from openpyxl import load_workbook
 
 def format_cpu(cpu):
-    i = 0
-    wordsdeleteintel = ['12th Gen ','11th Gen ','10th Gen ', '(R)', '(TM)']
+    wordsdeleteintel = ['12th Gen ','11th Gen ','10th Gen ', '(R)', '(TM)', "CPU "]
     wordsdeleteamd = [' with Radeon Vega Graphics', " Mobile", " Quad-Core Processor           "]
     for word in wordsdeleteintel:
         if word in cpu:

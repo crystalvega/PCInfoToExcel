@@ -108,4 +108,4 @@ def configuration():
     sheet1.cell(row = rowinputall, column =columninput+1).value = " "
         
 def close():
-    wb.save(filename = 'tablica.xlsx')
+    wb.save(filename = fileName)

@@ -5,16 +5,13 @@ from GetConfiguration.GetIP import get_ip
 def get_char(config):
     allconf = []
     diskconf = []
-    smartwords = ['Model', 'Power-On Hours (POH)', 'Power Cycle Count', 'Firmware Revision', ]
+    smartwords = ['Model', 'Power On Hours', 'Power On Count', 'Firmware', 'Disk Size']
     i = 1
 
     c = wmi.WMI()
-    modelsize = []
-    for model in c.Win32_Diskdrive():
-        modelsize.append((model.Model, model.Size))
-    smartfile = GetSMART.gen('C:\\Windows\\Temp\\dataofpack1\\tools\\DiskSmartView.exe', 'C:\\Windows\\Temp\\dataofpack1\\tools\\smart.txt', config)
-    status = GetSMART.status('C:\\Windows\\Temp\\dataofpack1\\tools\\smart.txt')
-    smart = GetSMART.smart('C:\\Windows\\Temp\\dataofpack1\\tools\\smart.txt', smartwords, modelsize)
+    smartfile = GetSMART.gen('C:\\Windows\\Temp\\dataofpack1\\tools\\DiskInfo32.exe', 'C:\\Windows\\Temp\\dataofpack1\\tools\\DiskInfo.txt', config)
+    status = GetSMART.status('C:\\Windows\\Temp\\dataofpack1\\tools\\DiskInfo.txt')
+    smart = GetSMART.smart('C:\\Windows\\Temp\\dataofpack1\\tools\\DiskInfo.txt', smartwords)
     display = GetDisplay.get(c.Win32_DesktopMonitor()[0].pnpdeviceid)
     cpufromdb =  GetCPUListForUpgrade.get_cpu_info(c.Win32_Processor()[0].Name)
     cpusupgrade = GetCPUListForUpgrade.get_cpu_upgrade(cpufromdb)
@@ -50,8 +47,11 @@ def get_char(config):
         else:
             allconf.append((["Диск " + str(j), ""]))
             allconf.append((["Состояние диска " + str(j), ""]))
+    
+    OpS = c.Win32_OperatingSystem()[0].name
+    OpS = OpS.split("|")[0]
 
-    allconf.append(("Операционная система", c.Win32_OperatingSystem()[0].name))
+    allconf.append(("Операционная система", OpS))
     allconf.append(("Антивирус", GetAntivirus.get()))
     allconf.append(("CPU Под замену", cpusupgrade[1]))
     allconf.append(("Все CPU под сокет", cpusupgrade[0]))
@@ -63,8 +63,7 @@ def get_char(config):
     i = 0
     ifs = 0
     while i <= smart[len(smart)-1][0] and i < 4:
-        diskconf.append((("Диск", i+1),("Наименование", smart[ifs+1][2]), ("Прошивка", smart[ifs+2][2]), ("Размер", smart[ifs][2]), ("Время работы", smart[ifs+3][2]+" Часов"), ("Включён", smart[ifs+4][2]+" Раз"), ("Состояние", status[i][1]), ("S.M.A.R.T.",'=HYPERLINK("' + smartfile + '")')))
+        diskconf.append((("Диск", i+1),("Наименование", smart[ifs][2]), ("Прошивка", smart[ifs+1][2]), ("Размер", smart[ifs+2][2].split(" (")[0]), ("Время работы", smart[ifs+3][2].replace(" hours", "") +" Часов"), ("Включён", smart[ifs+4][2].replace(" count","") +" Раз"), ("Состояние", status[i][1]), ("S.M.A.R.T.",'=HYPERLINK("' + smartfile + '")')))
         i +=1
         ifs +=5
-
     return allconf, diskconf
