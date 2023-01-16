@@ -35,7 +35,7 @@ def Error():
 class progress_bar:
     master = tk.Tk()
     progress_bar = ttk.Progressbar(master, orient="horizontal",mode="determinate", maximum=100, value=0)
-    label_1 = tk.Label(master, text="Шкала выполнения программы")
+    label_1 = tk.Label(master, text="Происходит сбор информации...")
     label_1.grid(row=0, column=0)
     progress_bar.grid(row=0, column=1)
     master.update()

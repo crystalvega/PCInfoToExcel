@@ -8,13 +8,13 @@ def gen(path, args, config):
    
 def status(path):
     statusret = []
-    y = 1
     with open(path, 'r', encoding='UTF-8') as f:
         for line in f:
             line = line.replace("\n", "")
+            if "           Model : " in line:
+                modelline = line
             if "Health Status" in line:
-                statusret.append((y, line.replace("   Health Status : ", "")))
-                y+=1
+                statusret.append((modelline, line.replace("   Health Status : ", "")))
     if len(statusret) == 0:
         statusret.append(["0","Not Found"])
     return statusret
